@@ -16,7 +16,7 @@ class AuthController extends Controller
    */
   public function register(Request $request)
   {
-    /*--------Concern 1------------------*/
+    /*--------Concern 1(Request validation)------------------*/
     $validator = Validator::make($request->all(), [
       'email' => 'required|email|unique:users',
       'name' => 'required|string',
@@ -24,7 +24,7 @@ class AuthController extends Controller
     ]);
 
     if ($validator->fails()) {
-      /*--------Concern 3------------------*/
+      /*--------Concern 3(Response formatting and return)-----------------*/
       return response()->json(
         [
           "status" => false,
@@ -34,7 +34,7 @@ class AuthController extends Controller
       );
     }
 
-    /*--------Concern 2------------------*/
+    /*--------Concern 2 (Business logic execution)------------------*/
     $password = Hash::make($request->password);
     $user = User::create([
       'name' => $request->name,
@@ -42,7 +42,7 @@ class AuthController extends Controller
       'email' => $request->email
     ]);
 
-    /*--------Concern 3------------------*/
+    /*--------Concern 3(Response formatting and return)------------------*/
     return response()->json(
       [
         "status" => true,
