@@ -2,13 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Validators\AuthValidator;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+
+  protected $authValidator;
+  
+  /**
+   * __construct
+   * 
+   * @param \App\Http\Validators\AuthValidator $authValidator
+   * @return void
+   */
+  public function __construct(AuthValidator $authValidator)
+  {
+    $this->authValidator = $authValidator;
+    
+  }
+
+
   /**
    * create a new account
    * @param \Illuminate\Http\Request $request
@@ -16,20 +32,12 @@ class AuthController extends Controller
    */
   public function register(Request $request)
   {
-    /*--------Concern 1(Request validation)------------------*/
-    $validator = Validator::make($request->all(), [
-      'email' => 'required|email|unique:users',
-      'name' => 'required|string',
-      'password' => 'required|min:6'
-    ]);
-
-    if ($validator->fails()) {
-      /*--------Concern 3(Response formatting and return)-----------------*/
-      return response()->json(
-        [
-          "status" => false,
-          "message" => $validator->errors()
-        ],
+    $errors = $this->authValidator
+      ->validate($request->all())
+      ->getErrors();
+    
+    if (count($errors)) {
+      return response()->json(["status" => false,"message" => $errors],
         400
       );
     }
