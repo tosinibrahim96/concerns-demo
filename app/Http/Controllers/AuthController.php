@@ -42,7 +42,7 @@ class AuthController extends Controller
       );
     }
 
-    /*--------Concern 2------------------*/
+    /*--------Concern 2 (Business logic execution)------------------*/
     $password = Hash::make($request->password);
     $user = User::create([
       'name' => $request->name,
@@ -50,7 +50,7 @@ class AuthController extends Controller
       'email' => $request->email
     ]);
 
-    /*--------Concern 3------------------*/
+    /*--------Concern 3(Response formatting and return)------------------*/
     return response()->json(
       [
         "status" => true,
